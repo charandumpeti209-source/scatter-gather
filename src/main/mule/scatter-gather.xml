@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<http:body ><![CDATA[#[payload]]]></http:body>
 			</http:error-response>
 		</http:listener>
-		<logger level="INFO" doc:name="Logger" doc:id="9e45f136-2722-459d-9068-448259b159ba" message="started"/>
+		<logger level="INFO" doc:name="Logger" doc:id="9e45f136-2722-459d-9068-448259b159ba" message="started flow"/>
 		<scatter-gather doc:name="Scatter-Gather" doc:id="9b0c5449-7048-44ae-987d-4c91d206bb35" >
 			<route >
 				<http:request method="GET" doc:name="Request" doc:id="4f3fc3df-4e17-4896-b6bf-75042eedcb42" config-ref="HTTP_Request_configuration" path="/api/flights"/>
