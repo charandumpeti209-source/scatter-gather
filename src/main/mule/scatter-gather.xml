@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="de431ac7-aceb-49e6-b885-b46ad785ed3f" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="c346afec-9031-4674-9e4e-bcbe8b17a827" >
+		<http:request-connection host="training4-american-ws.cloudhub.io" port="80" />
+	</http:request-config>
+	<flow name="scatter-gatherFlow" doc:id="14c00447-3022-404b-8f75-844e0b0c066b" >
+		<http:listener doc:name="Listener" doc:id="7acd93d4-5431-4d0c-867d-9c3e39eabaa9" config-ref="HTTP_Listener_config" path="/scatter-gather">
+			<http:error-response >
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="9e45f136-2722-459d-9068-448259b159ba" message="started"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="9b0c5449-7048-44ae-987d-4c91d206bb35" >
+			<route >
+				<http:request method="GET" doc:name="Request" doc:id="4f3fc3df-4e17-4896-b6bf-75042eedcb42" config-ref="HTTP_Request_configuration" path="/api/flights"/>
+			</route>
+			<route >
+				<http:request method="GET" doc:name="Request" doc:id="bc03382b-f3b0-4335-b969-0ea4c44ac829" config-ref="HTTP_Request_configuration" path="/api/flights"/>
+			</route>
+			<route >
+				<http:request method="GET" doc:name="Request" doc:id="0d7e666e-80b2-4d21-b3a3-42b9a1de77ba" config-ref="HTTP_Request_configuration" path="/api/flights"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="6f302dea-851b-4534-91c6-da9229d1f60f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="05547292-78eb-4e8a-a3c8-14749e2685b3" message="ended"/>
+	</flow>
+</mule>
